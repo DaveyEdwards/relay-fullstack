@@ -2,11 +2,14 @@ import Relay from 'react-relay';
 import Feature from './FeatureComponent';
 
 export default Relay.createContainer(Feature, {
+  initialVariables: {
+    first: 20
+  },
   fragments: {
     viewer: () => Relay.QL`
-      fragment on User {
+      fragment on Viewer {
         id,
-        features(first: 20) {
+        features(first: $first) {
           edges {
             node {
               id

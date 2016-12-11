@@ -1,29 +1,129 @@
-input AddFeatureInput {
-  name: String!
-  description: String!
-  url: String!
-  clientMutationId: String
+schema {
+  query: RootQuery
+  mutation: RootMutation
 }
 
-type AddFeaturePayload {
-  featureEdge: FeatureEdge
-  viewer: User
-  clientMutationId: String
-}
-
-# Feature integrated in our starter kit
-type Feature implements Node {
-  # The ID of an object
-  id: ID!
-
-  # Name of the feature
+input addFeatureInput {
+  # Name of feature
   name: String
 
-  # Description of the feature
+  # Description of feature
   description: String
 
-  # Url of the feature
+  # Url of feature
   url: String
+  clientMutationId: String
+}
+
+type addFeaturePayload {
+  viewer: Viewer
+  changedFeatureEdge: changedFeatureEdge
+  clientMutationId: String
+}
+
+input addUserInput {
+  # Name of user
+  name: String
+
+  # Username of user
+  username: String
+
+  # Website of user
+  website: String
+  clientMutationId: String
+}
+
+type addUserPayload {
+  viewer: Viewer
+  changedUserEdge: changedUserEdge
+  clientMutationId: String
+}
+
+# An edge in a connection.
+type changedFeatureEdge {
+  # The item at the end of the edge
+  node: changedFeatureNode
+
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+type changedFeatureNode {
+  # Name of feature
+  name: String
+
+  # Description of feature
+  description: String
+
+  # Url of feature
+  url: String
+  _id: ID
+
+  # The ID of an object
+  id: ID!
+}
+
+# An edge in a connection.
+type changedUserEdge {
+  # The item at the end of the edge
+  node: changedUserNode
+
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+type changedUserNode {
+  # Name of user
+  name: String
+
+  # Username of user
+  username: String
+
+  # Website of user
+  website: String
+  _id: ID
+
+  # The ID of an object
+  id: ID!
+}
+
+input deleteFeatureInput {
+  id: ID!
+  clientMutationId: String
+}
+
+type deleteFeaturePayload {
+  viewer: Viewer
+  ok: Boolean
+  id: ID!
+  clientMutationId: String
+}
+
+input deleteUserInput {
+  id: ID!
+  clientMutationId: String
+}
+
+type deleteUserPayload {
+  viewer: Viewer
+  ok: Boolean
+  id: ID!
+  clientMutationId: String
+}
+
+type Feature implements Node {
+  # Name of feature
+  name: String
+
+  # Description of feature
+  description: String
+
+  # Url of feature
+  url: String
+  _id: ID
+
+  # The ID of an object
+  id: ID!
 }
 
 # A connection to a list of items.
@@ -33,6 +133,7 @@ type FeatureConnection {
 
   # A list of edges.
   edges: [FeatureEdge]
+  count: Float
 }
 
 # An edge in a connection.
@@ -44,14 +145,32 @@ type FeatureEdge {
   cursor: String!
 }
 
-type Mutation {
-  addFeature(input: AddFeatureInput!): AddFeaturePayload
-}
-
 # An object with an ID
 interface Node {
   # The id of the object.
   id: ID!
+}
+
+enum orderByFeature {
+  NAME_ASC
+  NAME_DESC
+  DESCRIPTION_ASC
+  DESCRIPTION_DESC
+  URL_ASC
+  URL_DESC
+  _ID_ASC
+  _ID_DESC
+}
+
+enum orderByUser {
+  NAME_ASC
+  NAME_DESC
+  USERNAME_ASC
+  USERNAME_DESC
+  WEBSITE_ASC
+  WEBSITE_DESC
+  _ID_ASC
+  _ID_DESC
 }
 
 # Information about pagination in a connection.
@@ -69,26 +188,170 @@ type PageInfo {
   endCursor: String
 }
 
-type Query {
+type RootMutation {
+  addUser(input: addUserInput!): addUserPayload
+  updateUser(input: updateUserInput!): updateUserPayload
+  deleteUser(input: deleteUserInput!): deleteUserPayload
+  addFeature(input: addFeatureInput!): addFeaturePayload
+  updateFeature(input: updateFeatureInput!): updateFeaturePayload
+  deleteFeature(input: deleteFeatureInput!): deleteFeaturePayload
+}
+
+type RootQuery {
+  user(id: ID!): User
+  users(
+    # The ID of a User
+    id: [ID]
+
+    # The ID of a User
+    ids: [ID]
+    orderBy: orderByUser
+
+    # Name of user
+    name: String
+
+    # Username of user
+    username: String
+
+    # Website of user
+    website: String
+    _id: ID
+  ): [User]
+  feature(id: ID!): Feature
+  features(
+    # The ID of a Feature
+    id: [ID]
+
+    # The ID of a Feature
+    ids: [ID]
+    orderBy: orderByFeature
+
+    # Name of feature
+    name: String
+
+    # Description of feature
+    description: String
+
+    # Url of feature
+    url: String
+    _id: ID
+  ): [Feature]
+  viewer: Viewer
+
   # Fetches an object given its ID
   node(
     # The ID of an object
     id: ID!
   ): Node
-  viewer: User
 }
 
-# A person who uses our app
-type User implements Node {
-  # The ID of an object
+input updateFeatureInput {
+  # Name of feature
+  name: String
+
+  # Description of feature
+  description: String
+
+  # Url of feature
+  url: String
   id: ID!
+  clientMutationId: String
+}
 
-  # Features that I have
-  features(after: String, first: Int, before: String, last: Int): FeatureConnection
+type updateFeaturePayload {
+  changedFeature: Feature
+  clientMutationId: String
+}
 
-  # Users's username
+input updateUserInput {
+  # Name of user
+  name: String
+
+  # Username of user
   username: String
 
-  # User's website
+  # Website of user
   website: String
+  id: ID!
+  clientMutationId: String
+}
+
+type updateUserPayload {
+  changedUser: User
+  clientMutationId: String
+}
+
+type User implements Node {
+  # Name of user
+  name: String
+
+  # Username of user
+  username: String
+
+  # Website of user
+  website: String
+  _id: ID
+
+  # The ID of an object
+  id: ID!
+}
+
+# A connection to a list of items.
+type UserConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [UserEdge]
+  count: Float
+}
+
+# An edge in a connection.
+type UserEdge {
+  # The item at the end of the edge
+  node: User
+
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+type Viewer implements Node {
+  # The ID of an object
+  id: ID!
+  users(
+    after: String
+    first: Int
+    before: String
+    last: Int
+    orderBy: orderByUser
+
+    # Name of user
+    name: String
+
+    # Username of user
+    username: String
+
+    # Website of user
+    website: String
+    _id: ID
+  ): UserConnection
+  user(id: ID!): User
+  features(
+    after: String
+    first: Int
+    before: String
+    last: Int
+    orderBy: orderByFeature
+
+    # Name of feature
+    name: String
+
+    # Description of feature
+    description: String
+
+    # Url of feature
+    url: String
+    _id: ID
+  ): FeatureConnection
+  feature(id: ID!): Feature
 }

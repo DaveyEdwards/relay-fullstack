@@ -8,11 +8,20 @@ import historyApiFallback from 'connect-history-api-fallback';
 import chalk from 'chalk';
 import webpackConfig from '../webpack.config';
 import config from './config/environment';
-import schema from './data/schema';
+
+// Get Graffiti and graffiti-mongoose working
+import schema from './data/database';
+import graffiti from '@risingstack/graffiti';
+import { json } from 'body-parser';
 
 if (config.env === 'development') {
   // Launch GraphQL
   const graphql = express();
+
+  // Use body-parser to talk to graffiti which allows it to create a relay compliant server for development
+  graphql.use(json());
+  graphql.use(graffiti.express({schema}));
+
   graphql.use('/', graphQLHTTP({
     graphiql: true,
     pretty: true,
@@ -39,6 +48,11 @@ if (config.env === 'development') {
 } else if (config.env === 'production') {
   // Launch Relay by creating a normal express server
   const relayServer = express();
+
+  // Use body-parser to talk to graffiti which allows it to create a relay compliant server for production
+  relayServer.use(json());
+  relayServer.use(graffiti.express({schema}));
+
   relayServer.use(historyApiFallback());
   relayServer.use('/', express.static(path.join(__dirname, '../build')));
   relayServer.use('/graphql', graphQLHTTP({ schema }));

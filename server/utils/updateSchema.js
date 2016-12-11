@@ -4,7 +4,9 @@ import fs from 'fs';
 import { graphql } from 'graphql';
 import chalk from 'chalk';
 import { introspectionQuery, printSchema } from 'graphql/utilities';
-import schema from '../data/schema';
+
+// New central point for database since adding Mongoose Models for graffiti-mongoose
+import schema from '../data/database';
 
 const jsonFile = path.join(__dirname, '../data/schema.json');
 const graphQLFile = path.join(__dirname, '../data/schema.graphql');
