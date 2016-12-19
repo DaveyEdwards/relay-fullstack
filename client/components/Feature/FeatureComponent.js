@@ -3,7 +3,7 @@ import React from 'react';
 import { Grid, Cell, Card, CardTitle, CardText, CardActions, Button } from 'react-mdl';
 import Page from '../Page/PageComponent';
 import styles from './Feature.scss';
-// import AddFeature from './AddFeatureComponent';
+import AddFeature from './AddFeatureComponent';
 
 export default class Feature extends React.Component {
   static propTypes = {
@@ -33,10 +33,7 @@ export default class Feature extends React.Component {
             })}
           </Grid>
         </Page>
-
-        {/* Not currently working.
-        If you can help it would be much appreciated :)
-        <AddFeature viewer={this.props.viewer} /> */}
+        <AddFeature viewer={this.props.viewer} />
       </div>
     );
   }

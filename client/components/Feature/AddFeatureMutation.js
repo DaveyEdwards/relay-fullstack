@@ -18,8 +18,9 @@ class AddFeatureMutation extends Relay.Mutation {
 
   getFatQuery() {
     return Relay.QL`
-      fragment on AddFeaturePayload {
-        featureEdge,
+      fragment on addFeaturePayload {
+        changedFeatureEdge,
+        clientMutationId,
         viewer { features }
       }
     `;
@@ -31,7 +32,7 @@ class AddFeatureMutation extends Relay.Mutation {
       parentName: 'viewer',
       parentID: this.props.viewerId,
       connectionName: 'features',
-      edgeName: 'featureEdge',
+      edgeName: 'changedFeatureEdge',
       rangeBehaviors: {
         '': 'append',
       },
